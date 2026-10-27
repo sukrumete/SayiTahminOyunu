@@ -7,14 +7,19 @@ C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikin
 Bilgisayar 1 ile 100 arasında rastgele bir sayı tutar, kullanıcı bu sayıyı tahmin etmeye çalışır.
 
 - Bilgisayar her oyunda farklı bir sayı tutar
-- Kullanıcı bir tahmin girer, program doğru bilip bilmediğini söyler
+- Yanlış tahminde ipucu verir: "Daha büyük" ya da "Daha küçük"
+- Kullanıcı doğru bilene kadar tahmin etmeye devam eder
 - Yanlış girişte program kapanmaz, kullanıcıdan tekrar ister (sayı yerine harf girilirse)
 
 ```
+Tahmininizi girin (1-100): 50
+Daha küçük bir sayı giriniz
 Tahmininizi girin (1-100): elma
 Uygun bir sayı giriniz
-Tahmininizi girin (1-100): 50
-Maalesef bilemediniz
+Tahmininizi girin (1-100): 25
+Daha büyük bir sayı giriniz
+Tahmininizi girin (1-100): 37
+Bildiniz Tebrikler
 ```
 
 ## Kullanılanlar
@@ -45,11 +50,23 @@ Maalesef bilemediniz
 - Hata mesajını return'ün altına, if'in içine yazmıştım (bu satır hiç çalışmazdı) → yapay zekâ fark ettirdi. Düzeltilmiş metodu yapay zekâ verdi; yapıştırmadan önce "elma" yazılınca kodun hangi satırlardan geçtiğini kendim adım adım takip ettim
 - Tahmini tutulan sayıyla karşılaştırırken if parantezine önce zar, mesaj ve SayiAl(mesaj) yazdım → son satırı (`if (tutulanSayi == tahmin)`) yapay zekâ gösterdi. SayiAl'ı tekrar çağırmanın kullanıcıya ikinci kez soracağını öğrendim
 
+### Versiyon 2
+
+- Tahmin 50, tutulan sayı 63 iken ilk önce "daha küçük" demek gerektiğini düşündüm → yapay zekâ asansör benzetmesiyle sordu (50. kattasın, arkadaşın 63. katta), "daha büyük" olması gerektiğini kendim buldum
+- "Daha büyük" ipucunun koşulunu (`tahmin < tutulanSayi`) kendim yazdım
+- Üç durumu (küçük, büyük, eşit) if / else if / else ile yazdım. İlk denemelerde `else (...)` ve `if else` yazdım → yapay zekâ ipucu verdi, `else if` olarak düzelttim. Son else'e koşul yazılmadığını (geriye sadece "eşit" kaldığı için) yapay zekâ anlattı
+- Yanlış tahminde if bloğunun tekrar çalışması gerektiğini ve bunun için while kullanılabileceğini kendim düşündüm
+- İlk önce bütün satırların döngüye girmesi gerektiğini düşündüm → yapay zekâ sayı tutma satırı döngüye girerse her turda yeni sayı tutulacağını ve ipuçlarının anlamsız olacağını açıkladı. Bir kere olacak şeyler döngüden önce, her turda tekrar eden şeyler içeride
+- Döngünün tahmin tutulan sayıya eşit olunca bitmesi gerektiğini kendim buldum. while (true) ve else içinde break ile çıkmayı yapay zekâ önerdi
+- SayiAl metodunu da döngünün içine koymuştum ve tahmin satırını dışarıda bırakmıştım → yapay zekâ düzeltilmiş yerleşimi gösterdi. Metodun her zaman dosyanın en altında durduğunu, döngüye sadece onu çağıran satırın girdiğini öğrendim
+- Testte 340 ve 350 gibi aralık dışı sayıların da kabul edildiğini gördüm (yapay zekâ fark ettirdi) → sonraki adımlara ekledim
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
-- [ ] "Daha büyük / daha küçük" ipucu
+- [x] "Daha büyük / daha küçük" ipucu
 - [ ] Deneme sayacı ve hak sınırı
+- [ ] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
 - [ ] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
 - [ ] "Sıcak / soğuk" ipucu
 - [ ] Tekrar oyna ve en iyi skor
