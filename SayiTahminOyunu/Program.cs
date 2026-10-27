@@ -2,15 +2,25 @@
 
 int tutulanSayi = zar.Next(1, 101);
 
-int tahmin = SayiAl("Tahmininizi girin (1-100): ");
 
-if (tutulanSayi == tahmin)
+
+while(true)
 {
-    Console.WriteLine("Bildin");
-}
-else
-{
-    Console.WriteLine("Maalesef bilemediniz");
+    int tahmin = SayiAl("Tahmininizi girin (1-100): ");
+
+    if (tahmin < tutulanSayi)
+    {
+        Console.WriteLine("Daha büyük bir sayı giriniz");
+    }
+    else if (tahmin > tutulanSayi)
+    {
+        Console.WriteLine("Daha küçük bir sayı giriniz");
+    }
+    else
+    {
+        Console.WriteLine("Bildiniz Tebrikler");
+        break;
+    }
 }
 
 int SayiAl(string mesaj)
@@ -28,5 +38,3 @@ int SayiAl(string mesaj)
         Console.WriteLine("Uygun bir sayı giriniz"); 
     }
 }
-
-// V1: Sayi tutma ve tek tahmin
