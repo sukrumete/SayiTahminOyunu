@@ -15,30 +15,41 @@ Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, 
   - Yakınlık: "Çok Sıcak", "Sıcak", "Soğuk" ya da "Çok Soğuk" (her zorlukta aralığa göre ayarlanır)
 - Her yanlış tahminden sonra kalan hakkı gösterir
 - Bilinirse kaç denemede bulunduğunu, hak biterse tutulan sayıyı söyler
+- Oyun bitince tekrar oynamak isteyip istemediğini sorar
+- En az denemeyle bilinen oyunu en iyi skor olarak hatırlar, yeni rekor kırılınca haber verir
 - Yanlış girişte program kapanmaz:
   - Sayı yerine harf girilirse tekrar sorar
   - Aralık dışında bir sayı girilirse uyarır (bu durumda hak düşmez)
   - Geçersiz zorluk seçilirse Orta zorlukla başlar ve bunu söyler
 
 ```
-Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 3
-14 Deneme Hakkınız Var
-Tahmininizi girin (1-1000): 350
-Daha büyük bir sayı giriniz
-Çok Soğuk!
-13 hakkınız kaldı
-Tahmininizi girin (1-1000): 700
+Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
+3 Deneme Hakkınız Var
+Tahmininizi girin (1-10): 3
 Daha büyük bir sayı giriniz
 Soğuk!
-12 hakkınız kaldı
-Tahmininizi girin (1-1000): 860
+2 hakkınız kaldı
+Tahmininizi girin (1-10): 6
+Bildiniz Tebrikler: 2 denemede buldunuz
+Yeni Rekor!
+En iyi skorunuz: 2 deneme
+Tekrar oynamak ister misiniz? (E/H)
+e
+Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
+3 Deneme Hakkınız Var
+Tahmininizi girin (1-10): 6
+Daha küçük bir sayı giriniz
+Soğuk!
+2 hakkınız kaldı
+Tahmininizi girin (1-10): 8
+Daha küçük bir sayı giriniz
+Çok Soğuk!
+1 hakkınız kaldı
+Tahmininizi girin (1-10): 2
 Daha büyük bir sayı giriniz
-Sıcak!
-11 hakkınız kaldı
-Tahmininizi girin (1-1000): 930
-Daha büyük bir sayı giriniz
-Çok Sıcak!
-10 hakkınız kaldı
+Soğuk!
+Deneme Hakkınız Bitti. Tutulan Sayı: 4
+En iyi skorunuz: 2 deneme
 ```
 
 ## Kullanılanlar
@@ -119,6 +130,21 @@ Daha büyük bir sayı giriniz
 - Doğru bilince de "Çok Sıcak!" yazdığını yapay zekâ fark ettirdi. Zinciri "Bildiniz" bloğunun altına taşıdım (oraya sadece yanlış tahminde ulaşılıyor). Yerini yapay zekâ gösterdi
 - Üç zorlukta da ve doğru bilme durumunda ayrı ayrı test ettim
 
+### Versiyon 6
+
+- Yeni oyunda hangi satırların tekrar çalışması gerektiği sorusuna "hepsi" dedim → yapay zekâ Random nesnesinin bir kere oluşturulmasının yeterli olduğunu ve deneme sayacının her oyunda sıfırlanması gerektiğini açıkladı
+- Hesap makinesinde tekrar sorusu için yazdığım metodu hatırlayamadım, yapay zekâ hatırlattı. Bu projede yeni bir metot yazdım, adını (TekrarEt) kendim seçtim. Yapay zekânın sorusu üzerine evet / hayır cevabı için dönüş türünün `bool` olması gerektiğini kendim buldum
+- Metodun başlığını ilk denemede `bool;` ve `TekrarEt()` diye ayrı satırlara yazdım → yapay zekâ tür ile adın yan yana yazıldığını hatırlattı. Cevabı okuyan satırı yazamadım, yapay zekâ SayiAl'daki benzer satırı ipucu olarak gösterdi
+- if / else kısmını boşluk doldurma ile yazdım. `" e"` diye fazladan boşluk bıraktım. Önce `return cevap;`, sonra `return TekrarEt;` yazdım → yapay zekâ bool metodun yazı döndüremeyeceğini ve metodun adını kendi içinde döndürdüğümü fark ettirdi. `true` / `false` değerlerini ipucuyla buldum
+- `true` ile `false`'u ters yazsam ne olacağını sordum → Visual Studio'nun sadece yazım kurallarını kontrol ettiğini, mantık hatalarının ancak testle yakalandığını öğrendim
+- Bütün oyunu ikinci bir döngüye aldım (iç içe döngü). İlk denemede `bool tekrar = 0` yazdım → yapay zekâ bool'a sayı konamayacağını hatırlattı. Dış döngünün yapısını yapay zekâ hesap makinesindeki örnekle gösterdi
+- İlk denemede `tekrar = TekrarEt();` satırını unuttum ve fazladan iki satır yazdım → yapay zekâ fark ettirdi. Program kapanırken veda mesajı eklemeyi yapay zekâ önerdi
+- En iyi skor kutusunun her oyunda değişebileceği için dış döngünün içinde olması gerektiğini düşündüm → yapay zekâ çetele defteri benzetmesiyle kutunun içeride oluşturulursa her oyunda unutulacağını açıkladı. Bunun üzerine dışarıda olması gerektiğini söyledim
+- Başlangıç değeri 0 olursa hiçbir skorun rekor olamayacağını yapay zekânın sorusuyla gördüm. Başlangıç değeri olarak 1001'i kendim önerdim
+- Rekorun sadece kazanılan oyunda güncellenmesi gerektiğini yapay zekâ söyledi, kazanılan yeri ("Bildiniz" bloğu) kendim buldum. Yeni kodun `break`'ten önce olması gerektiğini yapay zekâ hatırlattı. İlk denemede karşılaştırmayı ters yazdım ve kutuyu güncellemeyi unuttum → yapay zekâ fark ettirdi, güncelleme satırını boşluk doldurma ile yazdım
+- Hiç kazanılmamışsa ekranda "1001 deneme" yazacağını yapay zekâ sordu. "En az bir kere kazanmışsa göster" kuralını yapay zekâ açıkladı. Koşulu önce `enIyiSkor < 1001` diye kendim yazdım, sonra ipucuyla `!=` kullandım. Kafam karışınca bu bloğun yerini yapay zekâ gösterdi
+- Kazanma, kaybetme ve tekrar kaybetme durumlarını art arda test ettim, rekorun korunduğunu gördüm
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
@@ -127,8 +153,8 @@ Daha büyük bir sayı giriniz
 - [x] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
 - [x] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
 - [x] "Sıcak / soğuk" ipucu
-- [ ] Tekrar oyna ve en iyi skor
+- [x] Tekrar oyna ve en iyi skor
 - [ ] Skorları dosyaya kaydetmek
 - [ ] OOP: Oyun ve Oyuncu sınıfları
-- [ ] Skor tablosu: en iyi 5 oyuncu
+- [ ] Skor tablosu: en iyi 5 oyuncu (zorluğa göre ayrı)
 - [ ] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
