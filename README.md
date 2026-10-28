@@ -4,22 +4,30 @@ C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikin
 
 ## Ne yapıyor?
 
-Bilgisayar 1 ile 100 arasında rastgele bir sayı tutar, kullanıcı bu sayıyı tahmin etmeye çalışır.
+Bilgisayar 1 ile 100 arasında rastgele bir sayı tutar, kullanıcı bu sayıyı 7 hakta tahmin etmeye çalışır.
 
 - Bilgisayar her oyunda farklı bir sayı tutar
 - Yanlış tahminde ipucu verir: "Daha büyük" ya da "Daha küçük"
-- Kullanıcı doğru bilene kadar tahmin etmeye devam eder
-- Yanlış girişte program kapanmaz, kullanıcıdan tekrar ister (sayı yerine harf girilirse)
+- Her yanlış tahminden sonra kalan hakkı gösterir
+- Bilinirse kaç denemede bulunduğunu, hak biterse tutulan sayıyı söyler
+- Yanlış girişte program kapanmaz, kullanıcıdan tekrar ister:
+  - Sayı yerine harf girilirse
+  - 1-100 dışında bir sayı girilirse (bu durumda hak düşmez)
 
 ```
+7 Deneme Hakkınız Var
+Tahmininizi girin (1-100): 340
+Lütfen 1 ila 100 arası sayı giriniz
 Tahmininizi girin (1-100): 50
-Daha küçük bir sayı giriniz
+Daha büyük bir sayı giriniz
+6 hakkınız kaldı
 Tahmininizi girin (1-100): elma
 Uygun bir sayı giriniz
-Tahmininizi girin (1-100): 25
-Daha büyük bir sayı giriniz
-Tahmininizi girin (1-100): 37
-Bildiniz Tebrikler
+Tahmininizi girin (1-100): 75
+Daha küçük bir sayı giriniz
+5 hakkınız kaldı
+Tahmininizi girin (1-100): 62
+Bildiniz Tebrikler: 3 denemede buldunuz
 ```
 
 ## Kullanılanlar
@@ -61,12 +69,28 @@ Bildiniz Tebrikler
 - SayiAl metodunu da döngünün içine koymuştum ve tahmin satırını dışarıda bırakmıştım → yapay zekâ düzeltilmiş yerleşimi gösterdi. Metodun her zaman dosyanın en altında durduğunu, döngüye sadece onu çağıran satırın girdiğini öğrendim
 - Testte 340 ve 350 gibi aralık dışı sayıların da kabul edildiğini gördüm (yapay zekâ fark ettirdi) → sonraki adımlara ekledim
 
+### Versiyon 3
+
+- Deneme sayacı için ilk önce kutunun döngünün içinde olması gerektiğini düşündüm → yapay zekâ çetele defteri benzetmesiyle sordu. Kutuyu oluşturmanın döngüden önce, artırmanın döngünün içinde olması gerektiğini kendim söyledim. Başlangıç değerinin 0 olması gerektiğini de kendim buldum
+- Sayacı artırmak için önce `SayiAl + 1` yazdım → yapay zekâ artacak şeyin sayaç olduğunu hatırlattı, `denemeSayisi++` olarak kendim yazdım
+- Tebrik mesajına deneme sayısını `+` ile ekledim. İlk denemede `+` tırnağın içinde kalmıştı ve bir `+` eksikti → yapay zekâ fark ettirdi. Testte `9denemede` diye yapışık çıktığını kendim gördüm, tırnağın içine boşluk koymayı yapay zekâ gösterdi
+- Hak sınırı için deneme sayısına bakmamız gerektiğini kendim buldum. Kontrolü SayiAl'a koymayı düşündüm → yapay zekâ SayiAl'ın sadece sayı sorduğunu, oyun kurallarının ana döngüde olduğunu açıkladı
+- Koşulu yazarken iki kez `==` yerine `=` yazdım. İlkinde yapay zekâ fark ettirdi, ikincisini kendim fark ettim
+- Hak kontrolünü if / else bloğunun altına koymayı yapay zekâ önerdi (bilinince break çalıştığı için oraya sadece bilemeyince ulaşılıyor). break'i if'in dışına yazmıştım (her turda oyun biterdi) → yapay zekâ fark ettirdi
+- Kullanıcıya kaç hakkı olduğunu söylememiz gerektiğini kendim fark ettim. Hem başta hem her turda göstermeyi yapay zekâ önerdi
+- 7 sayısını üç yerde yazmamak için `hakSayisi` kutusu oluşturmayı yapay zekâ önerdi. İlk denemede `string hakSayisi == 7` yazdım → türün int, koyarken tek `=` olması gerektiğini ipucuyla düzelttim
+- Kalan hak hesabını (`hakSayisi - denemeSayisi`) kendim buldum, ama koda ilk yazarken ters yazdım (eksi sonuç çıkardı) → yapay zekâ fark ettirdi
+- Hesabı paranteze alırken WriteLine'ın parantezini erken kapattım ve CS0019 hatası aldım → yapay zekâ hata mesajını açıkladı: WriteLine void olduğu için sonucuna yazı eklenemez
+- Aralık dışı sayıların hak düşürmemesi gerektiğine kendim karar verdim. Bu yüzden kontrolün sayaç artırma satırının üstünde olması gerektiğini de kendim buldum
+- Koşulu (`tahmin < 1 || tahmin > 100`) birkaç denemede yazdım: kutu adını unuttum, yanlış kutuyu (denemeSayisi) kullandım, `||` yerine `|` ve `| |` yazdım → yapay zekâ adım adım ipucu verdi. Turu atlayıp başa dönmek için `continue` kelimesini ipucuyla buldum
+- Kazanma, kaybetme, 0 ve 340 girişleriyle ayrı ayrı test ettim
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
 - [x] "Daha büyük / daha küçük" ipucu
-- [ ] Deneme sayacı ve hak sınırı
-- [ ] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
+- [x] Deneme sayacı ve hak sınırı
+- [x] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
 - [ ] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
 - [ ] "Sıcak / soğuk" ipucu
 - [ ] Tekrar oyna ve en iyi skor
