@@ -43,6 +43,12 @@ while (true)
 
     denemeSayisi++;
 
+    int uzaklik = tahmin - tutulanSayi;
+    uzaklik = Math.Abs(uzaklik);
+    int yuzde = uzaklik * 100 / ustSinir;
+
+
+
     if (tahmin < tutulanSayi)
     {
         Console.WriteLine("Daha büyük bir sayı giriniz");
@@ -55,6 +61,22 @@ while (true)
     {
         Console.WriteLine("Bildiniz Tebrikler: " + denemeSayisi + " denemede buldunuz");
         break;
+    }
+    if (yuzde <= 5)
+    {
+        Console.WriteLine("Çok Sıcak!");
+    }
+    else if (yuzde <= 15)
+    {
+        Console.WriteLine("Sıcak!");
+    }
+    else if (yuzde <= 30)
+    {
+        Console.WriteLine("Soğuk!");
+    }
+    else
+    {
+        Console.WriteLine("Çok Soğuk!");
     }
     if (denemeSayisi == hakSayisi)
     {
