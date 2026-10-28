@@ -1,5 +1,6 @@
 ﻿Random zar = new Random();
 bool tekrar = true;
+int enIyiSkor = 1001;
 
 while (tekrar)
 {
@@ -65,6 +66,11 @@ while (tekrar)
         else
         {
             Console.WriteLine("Bildiniz Tebrikler: " + denemeSayisi + " denemede buldunuz");
+            if (denemeSayisi < enIyiSkor)
+            {
+                enIyiSkor = denemeSayisi;
+                Console.WriteLine("Yeni Rekor!");
+            }
             break;
         }
         if (yuzde <= 5)
@@ -89,6 +95,12 @@ while (tekrar)
             break;
         }
         Console.WriteLine((hakSayisi - denemeSayisi) + " hakkınız kaldı");
+    }
+
+
+    if (enIyiSkor != 1001)
+    {
+        Console.WriteLine("En iyi skorunuz: " + enIyiSkor + " deneme");
     }
     tekrar = TekrarEt();
 }
