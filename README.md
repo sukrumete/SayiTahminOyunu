@@ -4,29 +4,32 @@ C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikin
 
 ## Ne yapıyor?
 
-Bilgisayar 1 ile 100 arasında rastgele bir sayı tutar, kullanıcı bu sayıyı 7 hakta tahmin etmeye çalışır.
+Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, kullanıcı bu sayıyı sınırlı hakla tahmin etmeye çalışır.
 
-- Bilgisayar her oyunda farklı bir sayı tutar
+- Üç zorluk seviyesi var:
+  - Kolay: 1-10 arası, 3 hak
+  - Orta: 1-100 arası, 7 hak
+  - Zor: 1-1000 arası, 14 hak
 - Yanlış tahminde ipucu verir: "Daha büyük" ya da "Daha küçük"
 - Her yanlış tahminden sonra kalan hakkı gösterir
 - Bilinirse kaç denemede bulunduğunu, hak biterse tutulan sayıyı söyler
-- Yanlış girişte program kapanmaz, kullanıcıdan tekrar ister:
-  - Sayı yerine harf girilirse
-  - 1-100 dışında bir sayı girilirse (bu durumda hak düşmez)
+- Yanlış girişte program kapanmaz:
+  - Sayı yerine harf girilirse tekrar sorar
+  - Aralık dışında bir sayı girilirse uyarır (bu durumda hak düşmez)
+  - Geçersiz zorluk seçilirse Orta zorlukla başlar ve bunu söyler
 
 ```
-7 Deneme Hakkınız Var
-Tahmininizi girin (1-100): 340
-Lütfen 1 ila 100 arası sayı giriniz
-Tahmininizi girin (1-100): 50
+Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
+3 Deneme Hakkınız Var
+Tahmininizi girin (1-10): 15
+Lütfen 1 ila 10 arası sayı giriniz
+Tahmininizi girin (1-10): 6
 Daha büyük bir sayı giriniz
-6 hakkınız kaldı
-Tahmininizi girin (1-100): elma
-Uygun bir sayı giriniz
-Tahmininizi girin (1-100): 75
-Daha küçük bir sayı giriniz
-5 hakkınız kaldı
-Tahmininizi girin (1-100): 62
+2 hakkınız kaldı
+Tahmininizi girin (1-10): 8
+Daha büyük bir sayı giriniz
+1 hakkınız kaldı
+Tahmininizi girin (1-10): 9
 Bildiniz Tebrikler: 3 denemede buldunuz
 ```
 
@@ -85,13 +88,25 @@ Bildiniz Tebrikler: 3 denemede buldunuz
 - Koşulu (`tahmin < 1 || tahmin > 100`) birkaç denemede yazdım: kutu adını unuttum, yanlış kutuyu (denemeSayisi) kullandım, `||` yerine `|` ve `| |` yazdım → yapay zekâ adım adım ipucu verdi. Turu atlayıp başa dönmek için `continue` kelimesini ipucuyla buldum
 - Kazanma, kaybetme, 0 ve 340 girişleriyle ayrı ayrı test ettim
 
+### Versiyon 4
+
+- Zorluk seçiminden önce, 100 sayısının kodda geçtiği yerleri aradım. Üçünü kendim buldum (101 dahil), uyarı mesajındakini yapay zekâ gösterdi. Hepsini `ustSinir` kutusuna bağlamayı yapay zekâ önerdi (`hakSayisi` ile aynı mantık)
+- 101 için `ustSinir = 101` yapmayı düşündüm → yapay zekâ mesajlarda ve kontrolde yanlış sayı çıkacağını açıkladı. Sonra `ustSinir++` denedim → yapay zekâ bunun kutunun kendisini kalıcı değiştirdiğini anlattı, `ustSinir + 1` kullanmayı gösterdi
+- Yazının içine değişken koymak için `$` ve `{ }` kullanmayı yapay zekâ anlattı. İlk denemede `$` ortada kaldı ve süslü parantezi unuttum → boşluk doldurma ile düzelttim. İkinci mesajı kendim, ipucusuz yazdım
+- Satırı değiştirirken yanlışlıkla `int tahmin =` kısmını sildim ve CS0103 hatası aldım → yapay zekâ hatayı açıkladı
+- Zorluk seçimini almak için yeni metot yazmam gerektiğini düşündüm → yapay zekâ var olan SayiAl metodunu farklı bir mesajla tekrar kullanabileceğimi hatırlattı
+- switch ile seçime göre aralık belirledim. İlk denemede `switch (ustSinir)` yazdım → yapay zekâ kararın neye göre verildiğini sordu, boşluk doldurma kalıbı verdi. `1,10` yazdım ve `;` unuttum, ipucuyla düzelttim
+- switch akışını ilk başta tam anlamadım → yapay zekâ kafe sipariş benzetmesiyle anlattı. Sonra 3 seçilince kodun nasıl çalıştığını kendim anlattım
+- Testte her zorlukta hakkın 7 olduğunu ve bunun Kolay için fazla, Zor için az olduğunu yapay zekâ fark ettirdi. Hak sayısını da switch'e eklemeyi kendim düşündüm (ayrı bir switch yazmıştım) → yapay zekâ aynı case'lere eklemeyi ve `hakSayisi`'nın switch'ten önce oluşturulması gerektiğini gösterdi
+- Geçersiz seçim (5) testini yapay zekâ önerdi. Hiçbir case uymayınca kutuların başlangıç değerinde (Orta) kaldığını öğrendim, default ile kullanıcıya bunu söyledim
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
 - [x] "Daha büyük / daha küçük" ipucu
 - [x] Deneme sayacı ve hak sınırı
 - [x] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
-- [ ] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
+- [x] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
 - [ ] "Sıcak / soğuk" ipucu
 - [ ] Tekrar oyna ve en iyi skor
 - [ ] Skorları dosyaya kaydetmek
