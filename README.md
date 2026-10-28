@@ -10,7 +10,9 @@ Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, 
   - Kolay: 1-10 arası, 3 hak
   - Orta: 1-100 arası, 7 hak
   - Zor: 1-1000 arası, 14 hak
-- Yanlış tahminde ipucu verir: "Daha büyük" ya da "Daha küçük"
+- Yanlış tahminde iki ipucu verir:
+  - Yön: "Daha büyük" ya da "Daha küçük"
+  - Yakınlık: "Çok Sıcak", "Sıcak", "Soğuk" ya da "Çok Soğuk" (her zorlukta aralığa göre ayarlanır)
 - Her yanlış tahminden sonra kalan hakkı gösterir
 - Bilinirse kaç denemede bulunduğunu, hak biterse tutulan sayıyı söyler
 - Yanlış girişte program kapanmaz:
@@ -19,18 +21,24 @@ Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, 
   - Geçersiz zorluk seçilirse Orta zorlukla başlar ve bunu söyler
 
 ```
-Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
-3 Deneme Hakkınız Var
-Tahmininizi girin (1-10): 15
-Lütfen 1 ila 10 arası sayı giriniz
-Tahmininizi girin (1-10): 6
+Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 3
+14 Deneme Hakkınız Var
+Tahmininizi girin (1-1000): 350
 Daha büyük bir sayı giriniz
-2 hakkınız kaldı
-Tahmininizi girin (1-10): 8
+Çok Soğuk!
+13 hakkınız kaldı
+Tahmininizi girin (1-1000): 700
 Daha büyük bir sayı giriniz
-1 hakkınız kaldı
-Tahmininizi girin (1-10): 9
-Bildiniz Tebrikler: 3 denemede buldunuz
+Soğuk!
+12 hakkınız kaldı
+Tahmininizi girin (1-1000): 860
+Daha büyük bir sayı giriniz
+Sıcak!
+11 hakkınız kaldı
+Tahmininizi girin (1-1000): 930
+Daha büyük bir sayı giriniz
+Çok Sıcak!
+10 hakkınız kaldı
 ```
 
 ## Kullanılanlar
@@ -100,6 +108,17 @@ Bildiniz Tebrikler: 3 denemede buldunuz
 - Testte her zorlukta hakkın 7 olduğunu ve bunun Kolay için fazla, Zor için az olduğunu yapay zekâ fark ettirdi. Hak sayısını da switch'e eklemeyi kendim düşündüm (ayrı bir switch yazmıştım) → yapay zekâ aynı case'lere eklemeyi ve `hakSayisi`'nın switch'ten önce oluşturulması gerektiğini gösterdi
 - Geçersiz seçim (5) testini yapay zekâ önerdi. Hiçbir case uymayınca kutuların başlangıç değerinde (Orta) kaldığını öğrendim, default ile kullanıcıya bunu söyledim
 
+### Versiyon 5
+
+- Tutulan sayı 63 iken 50 ve 70 tahminlerinin uzaklığını (13 ve 7) kendim buldum. Çıkarma işleminin eksi sonuç verebildiğini (50 - 63 = -13) yapay zekânın sorularıyla gördüm. Eksiyi atan `Math.Abs` metodunu notlarıma bakarak kendim buldum
+- İlk denemede `Math.Abs(uzaklik);` yazdım ama sonucu kutuya koymadım → yapay zekâ sonucun havada kaldığını açıkladı, `uzaklik = Math.Abs(uzaklik);` olarak düzelttim
+- Uzaklığın her tahminde hesaplanması için döngünün içinde olması gerektiğini kendim düşündüm. Döngünün en üstüne koymayı düşündüm → yapay zekâ orada tahminin henüz olmadığını açıkladı, doğru yeri gösterdi
+- Dört seviyeli (çok sıcak, sıcak, soğuk, çok soğuk) ipucu fikri benimdi. Sınır değerlerini yapay zekâ önerdi, ben kabul ettim
+- Zor modda 1000 tutulan sayıya 970 tahmininin ne diyeceğini sordum → bu soruyla sabit sınırların her zorlukta doğru çalışmadığını fark ettik. Uzaklığı yüzdeye çevirmeyi ve formülü (`uzaklik * 100 / ustSinir`) yapay zekâ önerdi ve sınav notu benzetmesiyle anlattı. Tam sayılarda önce çarpıp sonra bölmek gerektiğini de yapay zekâdan öğrendim
+- Dört seviyeli if / else if / else zincirini kendim yazdım
+- Doğru bilince de "Çok Sıcak!" yazdığını yapay zekâ fark ettirdi. Zinciri "Bildiniz" bloğunun altına taşıdım (oraya sadece yanlış tahminde ulaşılıyor). Yerini yapay zekâ gösterdi
+- Üç zorlukta da ve doğru bilme durumunda ayrı ayrı test ettim
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
@@ -107,7 +126,7 @@ Bildiniz Tebrikler: 3 denemede buldunuz
 - [x] Deneme sayacı ve hak sınırı
 - [x] 1-100 dışındaki tahminlere uyarı (aralık kontrolü)
 - [x] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
-- [ ] "Sıcak / soğuk" ipucu
+- [x] "Sıcak / soğuk" ipucu
 - [ ] Tekrar oyna ve en iyi skor
 - [ ] Skorları dosyaya kaydetmek
 - [ ] OOP: Oyun ve Oyuncu sınıfları
