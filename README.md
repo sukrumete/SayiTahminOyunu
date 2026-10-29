@@ -17,38 +17,42 @@ Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, 
 - Bilinirse kaç denemede bulunduğunu, hak biterse tutulan sayıyı söyler
 - Oyun bitince tekrar oynamak isteyip istemediğini sorar
 - En az denemeyle bilinen oyunu en iyi skor olarak hatırlar, yeni rekor kırılınca haber verir
+- En iyi skor bir dosyaya (enIyiSkor.txt) kaydedilir, program kapatılıp açılsa bile hatırlanır
 - Yanlış girişte program kapanmaz:
   - Sayı yerine harf girilirse tekrar sorar
   - Aralık dışında bir sayı girilirse uyarır (bu durumda hak düşmez)
   - Geçersiz zorluk seçilirse Orta zorlukla başlar ve bunu söyler
 
+Yeni rekor kırılan bir oyun:
 ```
-Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
-3 Deneme Hakkınız Var
-Tahmininizi girin (1-10): 3
+Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 2
+7 Deneme Hakkınız Var
+Tahmininizi girin (1-100): 30
 Daha büyük bir sayı giriniz
-Soğuk!
-2 hakkınız kaldı
-Tahmininizi girin (1-10): 6
+Sıcak!
+6 hakkınız kaldı
+Tahmininizi girin (1-100): 40
 Bildiniz Tebrikler: 2 denemede buldunuz
 Yeni Rekor!
 En iyi skorunuz: 2 deneme
-Tekrar oynamak ister misiniz? (E/H)
-e
+```
+
+Program kapatılıp tekrar açıldıktan sonra (rekor dosyadan okundu):
+```
 Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
 3 Deneme Hakkınız Var
 Tahmininizi girin (1-10): 6
-Daha küçük bir sayı giriniz
-Soğuk!
-2 hakkınız kaldı
-Tahmininizi girin (1-10): 8
-Daha küçük bir sayı giriniz
+Daha büyük bir sayı giriniz
 Çok Soğuk!
-1 hakkınız kaldı
+2 hakkınız kaldı
 Tahmininizi girin (1-10): 2
 Daha büyük bir sayı giriniz
+Çok Soğuk!
+1 hakkınız kaldı
+Tahmininizi girin (1-10): 8
+Daha büyük bir sayı giriniz
 Soğuk!
-Deneme Hakkınız Bitti. Tutulan Sayı: 4
+Deneme Hakkınız Bitti. Tutulan Sayı: 10
 En iyi skorunuz: 2 deneme
 ```
 
@@ -145,6 +149,22 @@ En iyi skorunuz: 2 deneme
 - Hiç kazanılmamışsa ekranda "1001 deneme" yazacağını yapay zekâ sordu. "En az bir kere kazanmışsa göster" kuralını yapay zekâ açıkladı. Koşulu önce `enIyiSkor < 1001` diye kendim yazdım, sonra ipucuyla `!=` kullandım. Kafam karışınca bu bloğun yerini yapay zekâ gösterdi
 - Kazanma, kaybetme ve tekrar kaybetme durumlarını art arda test ettim, rekorun korunduğunu gördüm
 
+### Versiyon 7
+
+- Yapay zekânın önerdiği testle (kazan, programı kapat, tekrar aç) rekorun unutulduğunu gördüm: Önceki rekorum 3 iken 4 denemeyle bilince yine "Yeni Rekor!" çıktı. Bunun kutunun sıfırlanmasından olduğunu kendim söyledim; yapay zekâ kutuların geçici hafızada durduğunu ve başlangıç değerine (1001) döndüğünü açıkladı
+- Dosyayla programın hangi anlarında işlem yapılacağını ilk başta anlamadım → yapay zekâ rekor defteri benzetmesiyle anlattı: açılışta defteri okumak, yeni rekor kırılınca deftere yazmak
+- Yazma işinin yerini önce skoru gösteren blokta aradım → yapay zekâ rekorun kırıldığı bloğu gösterdi
+- Sadece tek bir sayı saklayacağımız için `File.AppendAllText` değil `File.WriteAllText` (silip baştan yazar) kullanılması gerektiğini kendim söyledim
+- Yazma satırında önce dosya adı ile değişkeni aynı tırnağın içine yazdım, sonra virgülü tırnağın içinde bıraktım → yapay zekâ fark ettirdi. Kayıt için `denemeSayisi` yerine `enIyiSkor` kullanmayı yapay zekâ önerdi
+- "cannot convert from 'int'..." hatası aldım → yapay zekâ dosyaya sadece yazı yazılabildiğini açıkladı ve V1'de ters yönde önerdiğim ToString metodunu hatırlattı. Nokta ve parantezi ipucuyla ekledim
+- Yapay zekânın önerisiyle `bin\Debug\net10.0` klasöründeki `enIyiSkor.txt` dosyasını açtım, içinde son rekorun (4) yazdığını kendim kontrol ettim
+- Dosya yokken okumaya çalışmanın programı çökerteceğini yapay zekâ hatırlattı. `File.Exists` adını ipucuyla buldum. İlk denemede küçük harfle ve if olmadan yazdım, if satırında bir parantez eksikti → yapay zekâ fark ettirdi
+- Okuma satırının kalıbını (`string kayit = File.ReadAllText(...)`) yapay zekâ verdi. İçine dosya adını yazmakta zorlandım (önce WriteAllText'i, sonra değişkenin adını önerdim), ipuçlarıyla buldum. `File.` ön ekini unutmamı ve `ReadALlText` yazım hatamı yapay zekâ fark ettirdi
+- Okunan yazıyı sayıya çevirmek için TryParse kullanmayı ipucuyla kendim buldum. İlk denemede değerlerin sırasını ters yazdım, sonra `out int enIyiSkor` yazdım → yapay zekâ `int` yazınca aynı isimde yeni bir kutu oluşacağını açıkladı
+- Metot adlarını sık unuttuğumu söyledim → yapay zekâ ezberlemek yerine Visual Studio'nun önerilerini (nokta koyunca açılan liste) kullanmamı önerdi
+- Program açılınca kayıttaki rekorun (4) göründüğünü, daha iyi skorda yeni rekorun (2) kaydedildiğini ve program kapanıp açılınca da hatırlandığını test ettim
+- Yapay zekâ bir eksiği fark ettirdi: Dosyanın içi bozulursa (ör. "abc" yazılırsa) TryParse rekoru 0 yapar ve hiçbir skor rekor olamaz. Bunu sonraki adımlara ekledim
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
@@ -154,7 +174,8 @@ En iyi skorunuz: 2 deneme
 - [x] Zorluk seçimi: Kolay (1-10), Orta (1-100), Zor (1-1000)
 - [x] "Sıcak / soğuk" ipucu
 - [x] Tekrar oyna ve en iyi skor
-- [ ] Skorları dosyaya kaydetmek
+- [x] En iyi skoru dosyaya kaydetmek
+- [ ] Kayıt dosyası bozuksa rekoru güvenli şekilde sıfırlamak
 - [ ] OOP: Oyun ve Oyuncu sınıfları
 - [ ] Skor tablosu: en iyi 5 oyuncu (zorluğa göre ayrı)
 - [ ] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
