@@ -1,6 +1,12 @@
 ﻿Random zar = new Random();
 bool tekrar = true;
 int enIyiSkor = 1001;
+if (File.Exists("enIyiSkor.txt"))
+{
+    string kayit = File.ReadAllText("enIyiSkor.txt");
+    int.TryParse(kayit, out enIyiSkor);
+}
+
 
 while (tekrar)
 {
@@ -70,6 +76,7 @@ while (tekrar)
             {
                 enIyiSkor = denemeSayisi;
                 Console.WriteLine("Yeni Rekor!");
+                File.WriteAllText("enIyiSkor.txt", enIyiSkor.ToString());
             }
             break;
         }
