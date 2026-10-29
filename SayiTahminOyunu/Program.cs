@@ -1,4 +1,5 @@
-﻿Random zar = new Random();
+﻿
+Oyun oyun = new Oyun();
 bool tekrar = true;
 int enIyiSkor = 1001;
 if (File.Exists("enIyiSkor.txt"))
@@ -13,95 +14,38 @@ while (tekrar)
 
 
     int secim = SayiAl("Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): ");
+    oyun.Baslat(secim);
 
-    int ustSinir = 100;
-    int hakSayisi = 7;
-
-    switch (secim)
-    {
-        case 1:
-            ustSinir = 10;
-            hakSayisi = 3;
-            break;
-        case 2:
-            ustSinir = 100;
-            hakSayisi = 7;
-            break;
-        case 3:
-            ustSinir = 1000;
-            hakSayisi = 14;
-            break;
-        default:
-            Console.WriteLine("Geçersiz seçim, Orta zorluk seçildi.");
-            break;
-    }
-
-    int tutulanSayi = zar.Next(1, ustSinir + 1);
-
-    int denemeSayisi = 0;
-
-
-    Console.WriteLine(hakSayisi + " Deneme Hakkınız Var");
+    Console.WriteLine(oyun.HakSayisi + " Deneme Hakkınız Var");
 
     while (true)
     {
-        int tahmin = SayiAl($"Tahmininizi girin (1-{ustSinir}): ");
+        int tahmin = SayiAl($"Tahmininizi girin (1-{oyun.UstSinir}): ");
 
-        if (tahmin < 1 || tahmin > ustSinir)
+        if (tahmin < 1 || tahmin > oyun.UstSinir)
         {
-            Console.WriteLine($"Lütfen 1 ila {ustSinir} arası sayı giriniz");
+            Console.WriteLine($"Lütfen 1 ila {oyun.UstSinir} arası sayı giriniz");
             continue;
         }
 
-        denemeSayisi++;
-
-        int uzaklik = tahmin - tutulanSayi;
-        uzaklik = Math.Abs(uzaklik);
-        int yuzde = uzaklik * 100 / ustSinir;
-
-
-
-        if (tahmin < tutulanSayi)
+        if (oyun.TahminKontrolEt(tahmin))
         {
-            Console.WriteLine("Daha büyük bir sayı giriniz");
-        }
-        else if (tahmin > tutulanSayi)
-        {
-            Console.WriteLine("Daha küçük bir sayı giriniz");
-        }
-        else
-        {
-            Console.WriteLine("Bildiniz Tebrikler: " + denemeSayisi + " denemede buldunuz");
-            if (denemeSayisi < enIyiSkor)
+            Console.WriteLine("Bildiniz Tebrikler: " + oyun.DenemeSayisi + " denemede buldunuz");
+            if (oyun.DenemeSayisi < enIyiSkor)
             {
-                enIyiSkor = denemeSayisi;
+                enIyiSkor = oyun.DenemeSayisi;
                 Console.WriteLine("Yeni Rekor!");
                 File.WriteAllText("enIyiSkor.txt", enIyiSkor.ToString());
             }
             break;
         }
-        if (yuzde <= 5)
+
+        if (oyun.DenemeSayisi == oyun.HakSayisi)
         {
-            Console.WriteLine("Çok Sıcak!");
-        }
-        else if (yuzde <= 15)
-        {
-            Console.WriteLine("Sıcak!");
-        }
-        else if (yuzde <= 30)
-        {
-            Console.WriteLine("Soğuk!");
-        }
-        else
-        {
-            Console.WriteLine("Çok Soğuk!");
-        }
-        if (denemeSayisi == hakSayisi)
-        {
-            Console.WriteLine("Deneme Hakkınız Bitti. Tutulan Sayı: " + tutulanSayi);
+            Console.WriteLine("Deneme Hakkınız Bitti. Tutulan Sayı: " + oyun.TutulanSayi);
             break;
         }
-        Console.WriteLine((hakSayisi - denemeSayisi) + " hakkınız kaldı");
+        Console.WriteLine((oyun.HakSayisi - oyun.DenemeSayisi) + " hakkınız kaldı");
     }
 
 
@@ -140,6 +84,93 @@ bool TekrarEt()
     else
     {
         return false;
+    }
+}
+
+class Oyun
+{
+    public int UstSinir;
+    public int HakSayisi;
+    public int TutulanSayi;
+    public int DenemeSayisi;
+
+    Random zar = new Random();
+    public void Baslat(int secim)
+    {
+        UstSinir = 100;
+        HakSayisi = 7;
+        switch (secim)
+        {
+            case 1:
+                UstSinir = 10;
+                HakSayisi = 3;
+                break;
+            case 2:
+                UstSinir = 100;
+                HakSayisi = 7;
+                break;
+            case 3:
+                UstSinir = 1000;
+                HakSayisi = 14;
+                break;
+            default:
+                Console.WriteLine("Geçersiz seçim, Orta zorluk seçildi.");
+                break;
+        }
+        TutulanSayi = zar.Next(1, UstSinir + 1);
+        DenemeSayisi = 0;
+    }
+
+    public bool TahminKontrolEt(int tahmin)
+    {
+        DenemeSayisi++;
+        if (tahmin == TutulanSayi)
+        {
+            return true;
+        }
+        int uzaklik = tahmin - TutulanSayi;
+        uzaklik = Math.Abs(uzaklik);
+        int yuzde = uzaklik * 100 / UstSinir;
+
+        if (tahmin < TutulanSayi)
+        {
+            Console.WriteLine("Daha Büyük Sayı Giriniz");
+        }
+        else
+        {
+            Console.WriteLine("Daha Küçük Sayı Giriniz");
+        }
+
+        if (yuzde <= 5)
+        {
+            Console.WriteLine("Çok Sıcak!");
+        }
+        else if (yuzde <= 15)
+        {
+            Console.WriteLine("Sıcak!");
+        }
+        else if (yuzde <= 30)
+        {
+            Console.WriteLine("Soğuk!");
+        }
+        else
+        {
+            Console.WriteLine("Çok Soğuk!");
+        }
+        return false;
+    }
+
+    public bool HakBittiMi()
+    {
+        if (DenemeSayisi == HakSayisi)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 }
 
