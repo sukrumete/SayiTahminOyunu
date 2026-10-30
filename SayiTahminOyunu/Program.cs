@@ -1,13 +1,18 @@
 ﻿
 Oyun oyun = new Oyun();
+Oyuncu oyuncu = new Oyuncu();
+oyuncu.EnIyiSkor = 1001;
 bool tekrar = true;
-int enIyiSkor = 1001;
+
 if (File.Exists("enIyiSkor.txt"))
 {
     string kayit = File.ReadAllText("enIyiSkor.txt");
-    int.TryParse(kayit, out enIyiSkor);
+    int.TryParse(kayit, out oyuncu.EnIyiSkor);
 }
 
+Console.Write("Adınızı girin: ");
+oyuncu.Ad = Console.ReadLine() ?? "";
+Console.WriteLine($"Hoş geldiniz {oyuncu.Ad}!");
 
 while (tekrar)
 {
@@ -31,11 +36,11 @@ while (tekrar)
         if (oyun.TahminKontrolEt(tahmin))
         {
             Console.WriteLine("Bildiniz Tebrikler: " + oyun.DenemeSayisi + " denemede buldunuz");
-            if (oyun.DenemeSayisi < enIyiSkor)
+            if (oyun.DenemeSayisi < oyuncu.EnIyiSkor)
             {
-                enIyiSkor = oyun.DenemeSayisi;
+                oyuncu.EnIyiSkor = oyun.DenemeSayisi;
                 Console.WriteLine("Yeni Rekor!");
-                File.WriteAllText("enIyiSkor.txt", enIyiSkor.ToString());
+                File.WriteAllText("enIyiSkor.txt", oyuncu.EnIyiSkor.ToString());
             }
             break;
         }
@@ -49,9 +54,9 @@ while (tekrar)
     }
 
 
-    if (enIyiSkor != 1001)
+    if (oyuncu.EnIyiSkor != 1001)
     {
-        Console.WriteLine("En iyi skorunuz: " + enIyiSkor + " deneme");
+        Console.WriteLine("En iyi skorunuz: " + oyuncu.EnIyiSkor + " deneme");
     }
     tekrar = TekrarEt();
 }
@@ -174,3 +179,8 @@ class Oyun
     }
 }
 
+class Oyuncu
+{
+        public string Ad;
+        public int EnIyiSkor;
+}
