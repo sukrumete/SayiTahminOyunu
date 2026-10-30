@@ -1,6 +1,7 @@
 ﻿
 Oyun oyun = new Oyun();
 Oyuncu oyuncu = new Oyuncu();
+List<Oyuncu> skorlar = new List<Oyuncu>();
 oyuncu.EnIyiSkor = 1001;
 bool tekrar = true;
 
@@ -36,14 +37,23 @@ while (tekrar)
         if (oyun.TahminKontrolEt(tahmin))
         {
             Console.WriteLine("Bildiniz Tebrikler: " + oyun.DenemeSayisi + " denemede buldunuz");
+
             if (oyun.DenemeSayisi < oyuncu.EnIyiSkor)
             {
                 oyuncu.EnIyiSkor = oyun.DenemeSayisi;
                 Console.WriteLine("Yeni Rekor!");
                 File.WriteAllText("enIyiSkor.txt", oyuncu.EnIyiSkor.ToString());
             }
+
+            Oyuncu yeniKart = new Oyuncu();
+            yeniKart.Ad = oyuncu.Ad;
+            yeniKart.EnIyiSkor = oyun.DenemeSayisi;
+            skorlar.Add(yeniKart);
+
             break;
         }
+
+
 
         if (oyun.DenemeSayisi == oyun.HakSayisi)
         {
@@ -58,6 +68,12 @@ while (tekrar)
     {
         Console.WriteLine("En iyi skorunuz: " + oyuncu.EnIyiSkor + " deneme");
     }
+
+    foreach (Oyuncu kart in skorlar.OrderBy(k => k.EnIyiSkor).Take(5))
+    {
+        Console.WriteLine(kart.Ad + " - " + kart.EnIyiSkor + " deneme");
+    }
+
     tekrar = TekrarEt();
 }
 
@@ -181,6 +197,6 @@ class Oyun
 
 class Oyuncu
 {
-        public string Ad;
-        public int EnIyiSkor;
+    public string Ad;
+    public int EnIyiSkor;
 }
