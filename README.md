@@ -4,8 +4,9 @@ C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikin
 
 ## Ne yapıyor?
 
-Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, kullanıcı bu sayıyı sınırlı hakla tahmin etmeye çalışır.
+Oyuncu adını girer, bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, oyuncu bu sayıyı sınırlı hakla tahmin etmeye çalışır.
 
+- Oyuncunun adını sorar ve onu adıyla karşılar
 - Üç zorluk seviyesi var:
   - Kolay: 1-10 arası, 3 hak
   - Orta: 1-100 arası, 7 hak
@@ -18,42 +19,27 @@ Kullanıcı bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, 
 - Oyun bitince tekrar oynamak isteyip istemediğini sorar
 - En az denemeyle bilinen oyunu en iyi skor olarak hatırlar, yeni rekor kırılınca haber verir
 - En iyi skor bir dosyaya (enIyiSkor.txt) kaydedilir, program kapatılıp açılsa bile hatırlanır
+- Oyunun kuralları `Oyun` sınıfında, oyuncunun bilgileri (ad, en iyi skor) `Oyuncu` sınıfında tutulur
 - Yanlış girişte program kapanmaz:
   - Sayı yerine harf girilirse tekrar sorar
   - Aralık dışında bir sayı girilirse uyarır (bu durumda hak düşmez)
   - Geçersiz zorluk seçilirse Orta zorlukla başlar ve bunu söyler
 
-Yeni rekor kırılan bir oyun:
 ```
+Adınızı girin: mete
+Hoş geldiniz mete!
 Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 2
 7 Deneme Hakkınız Var
-Tahmininizi girin (1-100): 30
-Daha büyük bir sayı giriniz
+Tahmininizi girin (1-100): 50
+Daha Büyük Sayı Giriniz
 Sıcak!
 6 hakkınız kaldı
-Tahmininizi girin (1-100): 40
+Tahmininizi girin (1-100): 60
 Bildiniz Tebrikler: 2 denemede buldunuz
-Yeni Rekor!
 En iyi skorunuz: 2 deneme
-```
-
-Program kapatılıp tekrar açıldıktan sonra (rekor dosyadan okundu):
-```
-Zorluk seçin (1:Kolay, 2:Orta, 3:Zor): 1
-3 Deneme Hakkınız Var
-Tahmininizi girin (1-10): 6
-Daha büyük bir sayı giriniz
-Çok Soğuk!
-2 hakkınız kaldı
-Tahmininizi girin (1-10): 2
-Daha büyük bir sayı giriniz
-Çok Soğuk!
-1 hakkınız kaldı
-Tahmininizi girin (1-10): 8
-Daha büyük bir sayı giriniz
-Soğuk!
-Deneme Hakkınız Bitti. Tutulan Sayı: 10
-En iyi skorunuz: 2 deneme
+Tekrar oynamak ister misiniz? (E/H)
+h
+Görüşmek üzere!
 ```
 
 ## Kullanılanlar
@@ -165,6 +151,28 @@ En iyi skorunuz: 2 deneme
 - Program açılınca kayıttaki rekorun (4) göründüğünü, daha iyi skorda yeni rekorun (2) kaydedildiğini ve program kapanıp açılınca da hatırlandığını test ettim
 - Yapay zekâ bir eksiği fark ettirdi: Dosyanın içi bozulursa (ör. "abc" yazılırsa) TryParse rekoru 0 yapar ve hiçbir skor rekor olamaz. Bunu sonraki adımlara ekledim
 
+### Versiyon 8
+
+- Bir oyunun "özellikleri" ne olabilir sorusuna "skor, sayılar, semboller" dedim → yapay zekâ sembollerin bizim oyunda olmadığını söyledi ve kodumdaki dört kutuyu (`ustSinir`, `hakSayisi`, `tutulanSayi`, `denemeSayisi`) gösterdi. Hepsinin bir oyuna ait olduğunu "oyun kâğıdı" benzetmesiyle açıkladı. Bunların sınıfın özellikleri olacağını sonra kendim söyledim
+- Oyunun ne yaptığını (zorluk seçimi, hak, rastgele sayı, tahmin, sıcak / soğuk, tekrar) kendi cümlelerimle anlattım → yapay zekâ bunu üç metoda çevirdi ve isimlerini (`Baslat`, `TahminKontrolEt`, `HakBittiMi`) önerdi. Döngünün ana programda kalması gerektiğini de yapay zekâ söyledi
+- İlk sınıf denemesinde sınıfa `Oyuncu` adını verdim ve hesap makinesindeki `List` satırını kopyaladım. Sonra özellik yerine metot adlarını (`Baslat`, `TahminKontrolEt`...) özellik gibi yazdım → yapay zekâ özellik (bilgi) ile metot (iş) farkını hatırlattı (V12'de de karıştırmıştım). Dört özelliği küçük harfle ve `;` unutarak yazdım → büyük harf ve `;` kuralını yapay zekâ hatırlattı. "Bunlar sınıf değil, sınıfın içindeki özellikler" diyerek farkı kendim kavradım
+- Baslat için dışarıdan neye ihtiyaç olduğunu sorulunca hak sayısını da saydım → yapay zekâ sadece zorluk seçiminin dışarıdan gelmesi gerektiğini, hakkı metodun kendisinin belirleyeceğini aşçı benzetmesiyle açıkladı. `int secim` parametresini kendim yazdım. `void` kelimesini ipucuyla buldum ama önce süslü parantezin içine yazdım → yapay zekâ yerini düzeltti. `public` yazmam gerektiğini hesap makinesindeki `Hesapla` örneğinden ipucuyla çıkardım
+- Ana programdaki switch'i Baslat'a taşıdım: Büyük harfli özelliklerle kendim yazdım. Hiçbir case uymazsa özelliklerin boş kalacağını, bu yüzden switch'in üstüne başlangıç değerleri koymam gerektiğini yapay zekâ hatırlattı
+- Oyunun kendi `Random zar` nesnesini, bir yorumda görmüştüm, kendim ekledim. `TutulanSayi = zar.Next(1, UstSinir + 1);` satırını yapay zekâ boşluk doldurma ile verdi, ben doldurdum. `DenemeSayisi = 0;` satırını kendim yazdım
+- `Oyun oyun = new Oyun();` satırını kendim yazdım. Nesnenin döngünün dışında olması gerektiğini yapay zekâ önerdi (ben içinde olsun demiştim; yapay zekâ ikisinin de çalışacağını söyledi). `oyun.Baslat(secim);` çağrısında önce tür yazdım, sonra soru mesajını, sonra yanlış değerleri verdim → doğru satırı yapay zekâ gösterdi ve "tanımda kaç parametre varsa çağırırken o kadar değer verilir" kuralını anlattı
+- Eski hazırlık kodunu silince 17 kırmızı çizgi çıktı. Yapay zekâ Bul ve Değiştir'i önerdi, ben her yeri tek tek elle `oyun.UstSinir`, `oyun.HakSayisi` gibi değiştirmeyi seçtim
+- TahminKontrolEt için dışarıdan tahmine ihtiyacı olduğunu kendim buldum. Geri vereceği şey olarak tutulan sayıyı önerdim → yapay zekâ oyuncunun sayıyı görmemesi gerektiğini, ana programın sadece "bildi mi?" bilgisine ihtiyacı olduğunu açıkladı. `bool` türünü bu sorudan sonra buldum. Başlığa `void` kopyalamıştım, düzelttim
+- Metodun içine `oyun.DenemeSayisi++` yazdım → yapay zekâ sınıfın içinden kendi özelliğine `oyun.` olmadan ulaşıldığını açıkladı. `if (tahmin = TutulanSayi)` ve `Console.WriteLine` yazmıştım → yapay zekâ `==` ve cevap vermek gerektiğini söyledi, `return true` satırını ve metodun orada bittiğini anladım. `uzaklik` ve `yuzde` satırlarını ana programdan uyarladım, ama onları da özellik sandım → yapay zekâ bunların geçici hesap kutuları olduğunu açıkladı
+- Büyük / küçük kontrolü için switch kullanılıp kullanılamayacağını sordum → yapay zekâ switch'in sabit değerler, karşılaştırmaların if için olduğunu açıkladı. `else`'e yine koşul yazdım (V2'deki hata) → yapay zekâ fark ettirdi. Sıcak / soğuk zincirini kopyalayarak taşıdım. Hak bitti ve kalan hak satırlarını da koymuştum → yapay zekâ `break`'in metodun içinde çalışmayacağını ve bunun ayrı bir metot (`HakBittiMi`) işi olduğunu açıkladı. `return false;` satırını kendim yazdım
+- Ana programda `if (oyun.TahminKontrolEt(tahmin))` satırını yapay zekânın boşluk doldurma kalıbıyla yazdım, satırı soldan sağa kendim açıkladım. Eski "Bildiniz" bloğunun içini yeni `if`'in içine taşıdım ve eski kodu yapay zekânın listesine göre sildim
+- HakBittiMi için ihtiyaç duyduğu bilgileri (`DenemeSayisi`, `HakSayisi`) söyledim → yapay zekâ bunların zaten oyunun özellikleri olduğunu, bu yüzden parantezin boş kalacağını açıkladı. Başlığı yazdım (sonunda `;` ile), içinde yanlış isim (`DenemeHakki`) ve `Console.WriteLine` kullandım → yapay zekâ ipucu verdi, `return true/false` ile düzelttim. Kapanış `}` eksikti. Ana programdaki `if (oyun.HakBittiMi())` satırını ve son kodun tamamını yapay zekâ verdi. Metodu anlamakta çok zorlandım, yapay zekâ satır satır ve otopark benzetmesiyle açıkladı
+- Oyuncu sınıfı için "ad ve soyad" dedim → yapay zekâ tek `Ad` özelliği önerdi. İkinci özelliğin en iyi skor olduğunu, ana programdaki satırı gösterince buldum. Türleri (`string`, `int`) kendim buldum; İngilizce `Name` ve `score` yazmıştım, Türkçe isimleri yapay zekâ önerdi. `Oyuncu oyuncu = new Oyuncu();` satırını kendim yazdım
+- Oyuncunun adını sorma: iki işi tek satırda birleştirmiştim → yapay zekâ ayırdı. `Console.Write` satırını ve `?? ""` kalıbını yapay zekâ verdi. `oyuncu.Ad` yerine önce `oyuncu.string` yazdım, ipucuyla buldum. Selamlama satırını (`$"Hoş geldiniz {oyuncu.Ad}!"`) denemelerim yanlıştı, doğrusunu yapay zekâ gösterdi. `?? ""` olmazsa ne olacağını sordum, yapay zekâ açıkladı
+- En iyi skoru oyuncunun kartına taşımayı yapay zekâ önerdi. `oyuncu.EnIyiSkor = 1001;` satırını kendim yazdım, yerini yapay zekâ gösterdi. `enIyiSkor` geçen yerlerin listesini yapay zekâ çıkardı, hepsini ben `oyuncu.EnIyiSkor` ile değiştirdim ve eski kutuyu sildim. `int.TryParse(kayit, out oyuncu.EnIyiSkor);` satırını zaten doğru yazmıştım
+- Testleri (kolay / orta / zor, geçersiz seçim, aralık dışı sayı, kaybetme, tekrar oynama, ad sorma, rekorun dosyada kalması) yapay zekâ önerdi, hepsini ben çalıştırdım
+- OOP benim için hâlâ en zor konu, özellikle sınıfın içinden kendi özelliklerine ulaşmak ve hangi bilginin özellik, hangisinin geçici kutu olduğu. Tekrar ederek oturtmaya devam edeceğim
+- `Oyuncu` sınıfı şimdilik sadece ad ve en iyi skoru tutuyor, skor tablosunda (sonraki adım) kullanılacak
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
@@ -175,7 +183,7 @@ En iyi skorunuz: 2 deneme
 - [x] "Sıcak / soğuk" ipucu
 - [x] Tekrar oyna ve en iyi skor
 - [x] En iyi skoru dosyaya kaydetmek
+- [x] OOP: Oyun ve Oyuncu sınıfları
 - [ ] Kayıt dosyası bozuksa rekoru güvenli şekilde sıfırlamak
-- [ ] OOP: Oyun ve Oyuncu sınıfları
 - [ ] Skor tablosu: en iyi 5 oyuncu (zorluğa göre ayrı)
 - [ ] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
