@@ -165,13 +165,24 @@ Görüşmek üzere!
 - Metodun içine `oyun.DenemeSayisi++` yazdım → yapay zekâ sınıfın içinden kendi özelliğine `oyun.` olmadan ulaşıldığını açıkladı. `if (tahmin = TutulanSayi)` ve `Console.WriteLine` yazmıştım → yapay zekâ `==` ve cevap vermek gerektiğini söyledi, `return true` satırını ve metodun orada bittiğini anladım. `uzaklik` ve `yuzde` satırlarını ana programdan uyarladım, ama onları da özellik sandım → yapay zekâ bunların geçici hesap kutuları olduğunu açıkladı
 - Büyük / küçük kontrolü için switch kullanılıp kullanılamayacağını sordum → yapay zekâ switch'in sabit değerler, karşılaştırmaların if için olduğunu açıkladı. `else`'e yine koşul yazdım (V2'deki hata) → yapay zekâ fark ettirdi. Sıcak / soğuk zincirini kopyalayarak taşıdım. Hak bitti ve kalan hak satırlarını da koymuştum → yapay zekâ `break`'in metodun içinde çalışmayacağını ve bunun ayrı bir metot (`HakBittiMi`) işi olduğunu açıkladı. `return false;` satırını kendim yazdım
 - Ana programda `if (oyun.TahminKontrolEt(tahmin))` satırını yapay zekânın boşluk doldurma kalıbıyla yazdım, satırı soldan sağa kendim açıkladım. Eski "Bildiniz" bloğunun içini yeni `if`'in içine taşıdım ve eski kodu yapay zekânın listesine göre sildim
-- HakBittiMi için ihtiyaç duyduğu bilgileri (`DenemeSayisi`, `HakSayisi`) söyledim → yapay zekâ bunların zaten oyunun özellikleri olduğunu, bu yüzden parantezin boş kalacağını açıkladı. Başlığı yazdım (sonunda `;` ile), içinde yanlış isim (`DenemeHakki`) ve `Console.WriteLine` kullandım → yapay zekâ ipucu verdi, `return true/false` ile düzelttim. Kapanış `}` eksikti. Ana programdaki `if (oyun.HakBittiMi())` satırını ve son kodun tamamını yapay zekâ verdi. Metodu anlamakta çok zorlandım, yapay zekâ satır satır ve otopark benzetmesiyle açıkladı
+- HakBittiMi için ihtiyaç duyduğu bilgileri (`DenemeSayisi`, `HakSayisi`) söyledim → yapay zekâ bunların zaten oyunun özellikleri olduğunu, bu yüzden parantezin boş kalacağını açıkladı. Başlığı yazdım (sonunda `;` ile), içinde yanlış isim (`DenemeHakki`) ve `Console.WriteLine` kullandım → yapay zekâ ipucu verdi, `return true/false` ile düzelttim. Kapanış `}` eksikti. Metodu sınıfa yazdım ama ana programda kullanmadım, hak kontrolü ana programda eski haliyle duruyor (yapay zekâ ana programdaki kullanımını gösterdi, ben koda geçirmedim). Metodu anlamakta çok zorlandım, yapay zekâ satır satır ve otopark benzetmesiyle açıkladı
 - Oyuncu sınıfı için "ad ve soyad" dedim → yapay zekâ tek `Ad` özelliği önerdi. İkinci özelliğin en iyi skor olduğunu, ana programdaki satırı gösterince buldum. Türleri (`string`, `int`) kendim buldum; İngilizce `Name` ve `score` yazmıştım, Türkçe isimleri yapay zekâ önerdi. `Oyuncu oyuncu = new Oyuncu();` satırını kendim yazdım
 - Oyuncunun adını sorma: iki işi tek satırda birleştirmiştim → yapay zekâ ayırdı. `Console.Write` satırını ve `?? ""` kalıbını yapay zekâ verdi. `oyuncu.Ad` yerine önce `oyuncu.string` yazdım, ipucuyla buldum. Selamlama satırını (`$"Hoş geldiniz {oyuncu.Ad}!"`) denemelerim yanlıştı, doğrusunu yapay zekâ gösterdi. `?? ""` olmazsa ne olacağını sordum, yapay zekâ açıkladı
 - En iyi skoru oyuncunun kartına taşımayı yapay zekâ önerdi. `oyuncu.EnIyiSkor = 1001;` satırını kendim yazdım, yerini yapay zekâ gösterdi. `enIyiSkor` geçen yerlerin listesini yapay zekâ çıkardı, hepsini ben `oyuncu.EnIyiSkor` ile değiştirdim ve eski kutuyu sildim. `int.TryParse(kayit, out oyuncu.EnIyiSkor);` satırını zaten doğru yazmıştım
 - Testleri (kolay / orta / zor, geçersiz seçim, aralık dışı sayı, kaybetme, tekrar oynama, ad sorma, rekorun dosyada kalması) yapay zekâ önerdi, hepsini ben çalıştırdım
 - OOP benim için hâlâ en zor konu, özellikle sınıfın içinden kendi özelliklerine ulaşmak ve hangi bilginin özellik, hangisinin geçici kutu olduğu. Tekrar ederek oturtmaya devam edeceğim
 - `Oyuncu` sınıfı şimdilik sadece ad ve en iyi skoru tutuyor, skor tablosunda (sonraki adım) kullanılacak
+
+### Versiyon 9
+
+- Birden fazla oyunun skorunu tutmak için `List<T>` kullanılacağını notlarımdaki ipucuyla kendim söyledim. İlk denemede `List<int>` yazdım → yapay zekâ listede adın kaybolacağını açıkladı. `string` dedim, o da yetmedi. Yapay zekâ ipuçlarıyla `List<Oyuncu>` olduğunu buldum. Kendi yazdığım sınıfın da listenin türü olabileceğini ilk kez gördüm
+- "Oyuncu başına tek satır" seçeneğini seçtim. Mantığı kendi cümlelerimle kurdum: aynı kişi tabloda iki kere olmamalı, yeni skor daha iyiyse güncellenmeli. `foreach`'in ne anlama geldiğini unuttum → yapay zekâ pano benzetmesiyle açıkladı. `foreach (Oyuncu kart in skorlar)`, `if (oyuncu.Ad == kart.Ad)` ve güncelleme `if`'ini ipuçlarıyla yazdım. "Bulundu mu" bayrağı fikrini de ipucuyla hatırladım
+- Testte 6 denemede bildiğim halde tabloda "çiçek - 2 deneme" yazdı. 6 genel rekor olmasa da çiçeğin kendi rekoru olması gerektiğini fark ettim. Yapay zekâ sebebini açıkladı: dosyadaki tek sayı kimseye ait değil, tek bir `oyuncu` kartı var ve liste ile `oyuncu` aynı kartı gösteriyor. Bu, yapay zekânın kurduğu planın tasarım hatasıydı
+- Kapsamı küçültmeye karar verdim: tablo "oyuncu başına en iyi skor" yerine "kazanılan her oyun bir satır" oldu. Arama kodunu (`bulundu`, `foreach`) kullanmadım, sildim
+- Her kazanılan oyun için yeni bir kart eklemeyi boşluk doldurma kalıbıyla yazdım. `Oyun.DenemeSayisi` ve `skorlar.Add(oyuncu)` yazdım → yapay zekâ her seferinde aynı kartı eklemenin hata olduğunu ve `yeniKart` kullanılması gerektiğini fark ettirdi. Satırları iki kere yanlış yere yapıştırdım. Yapay zekâ doğru yeri ve bloğun tamamını verdi, süslü parantezin kaymış yerini yapay zekâ gösterdikten sonra ben düzelttim
+- Sıralama için `OrderBy`, ilk 5'i almak için `Take(5)` satırlarını yapay zekâ verdi. `=>` işaretini henüz tam anlamadım
+- `Take(2)` ile 3 oyun kazanıp tabloda 2 satır görerek sınırın çalıştığını test ettim, sonra 5'e geri aldım. Kazanma, kaybetme (kaybedilen oyun tabloya girmiyor) ve farklı zorlukları ayrı ayrı denedim
+- Bilinen sınırlamalar: Tablo sadece program açıkken durur, kapatınca silinir. Aynı oyuncu birden fazla satırda görünebilir, yani tablo "en iyi 5 oyun" gibi çalışıyor. "En iyi skorunuz" satırı hâlâ dosyadaki tek sayıdan geliyor, kimseye ait değil
 
 ## Sonraki adımlar
 
@@ -184,6 +195,5 @@ Görüşmek üzere!
 - [x] Tekrar oyna ve en iyi skor
 - [x] En iyi skoru dosyaya kaydetmek
 - [x] OOP: Oyun ve Oyuncu sınıfları
-- [ ] Kayıt dosyası bozuksa rekoru güvenli şekilde sıfırlamak
-- [ ] Skor tablosu: en iyi 5 oyuncu (zorluğa göre ayrı)
+- [x] Skor tablosu: en iyi 5
 - [ ] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
