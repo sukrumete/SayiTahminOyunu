@@ -1,4 +1,4 @@
-﻿
+﻿TersModOyna();
 Oyun oyun = new Oyun();
 Oyuncu oyuncu = new Oyuncu();
 List<Oyuncu> skorlar = new List<Oyuncu>();
@@ -106,6 +106,42 @@ bool TekrarEt()
     {
         return false;
     }
+}
+
+void TersModOyna()
+{
+    int altSinir = 1;
+    int ustSinir = 100;
+    int tahmin = 0;
+    int denemeSayisi = 0;
+
+    while (true)
+    {
+        tahmin = (altSinir + ustSinir) / 2;
+        Console.WriteLine($"Tahminim: {tahmin}");
+        Console.Write("B: daha büyük, K: daha küçük, D:  doğru:");
+        string cevap = Console.ReadLine() ?? "";
+
+        denemeSayisi++;
+
+        if (cevap == "D" || cevap == "d")
+        {
+            Console.WriteLine($"Buldum! {denemeSayisi}  tahminde buldum");
+            return;
+        }
+        else if (cevap == "B" || cevap == "b")
+        {
+            Console.WriteLine("Daha Büyük");
+            altSinir = tahmin + 1;
+        }
+        else if (cevap == "K" || cevap == "k")
+        {
+            Console.WriteLine("Daha Küçük");
+            ustSinir = tahmin - 1;
+        }
+    }
+
+
 }
 
 class Oyun
