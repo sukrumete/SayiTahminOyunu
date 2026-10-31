@@ -4,6 +4,13 @@ C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikin
 
 ## Ne yapıyor?
 
+Program açılınca bir oyun modu seçilir. İki mod var:
+
+- **Normal mod:** Bilgisayar bir sayı tutar, oyuncu sınırlı hakla tahmin eder
+- **Ters mod:** Oyuncu aklından bir sayı tutar, bilgisayar ikili aramayla (ortadan bölerek) tahmin eder
+
+### Normal mod
+
 Oyuncu adını girer, bir zorluk seçer, bilgisayar o aralıkta rastgele bir sayı tutar, oyuncu bu sayıyı sınırlı hakla tahmin etmeye çalışır.
 
 - Oyuncunun adını sorar ve onu adıyla karşılar
@@ -19,6 +26,7 @@ Oyuncu adını girer, bir zorluk seçer, bilgisayar o aralıkta rastgele bir say
 - Oyun bitince tekrar oynamak isteyip istemediğini sorar
 - En az denemeyle bilinen oyunu en iyi skor olarak hatırlar, yeni rekor kırılınca haber verir
 - En iyi skor bir dosyaya (enIyiSkor.txt) kaydedilir, program kapatılıp açılsa bile hatırlanır
+- Kazanılan oyunları sıralı bir skor tablosunda (ilk 5) gösterir, tablo program kapanınca silinir
 - Oyunun kuralları `Oyun` sınıfında, oyuncunun bilgileri (ad, en iyi skor) `Oyuncu` sınıfında tutulur
 - Yanlış girişte program kapanmaz:
   - Sayı yerine harf girilirse tekrar sorar
@@ -40,6 +48,33 @@ En iyi skorunuz: 2 deneme
 Tekrar oynamak ister misiniz? (E/H)
 h
 Görüşmek üzere!
+```
+
+### Ters mod
+
+Oyuncu 1-100 arasında bir sayıyı aklında tutar. Bilgisayar her seferinde kalan aralığın ortasını tahmin eder, oyuncu "daha büyük (B)", "daha küçük (K)" ya da "doğru (D)" diye cevap verir. Her tahminde aralığın yarısı elenir.
+
+- Başka bir harf yazılırsa uyarı verir, tahmin sayılmaz, aynı tahmini tekrar eder
+- Cevaplar birbiriyle çelişirse (olmayan bir sayıyı arıyorsa) bunu fark edip oyunu bitirir
+- Şimdilik tek oyunluk: Oyun bitince program kapanır, tekrar oynama sorulmaz
+
+```
+Oyun Modu Seçiniz (1: Normal, 2: Ters): 2
+Tahminim: 50
+B: daha büyük, K: daha küçük, D:  doğru:b
+Daha Büyük
+Tahminim: 75
+B: daha büyük, K: daha küçük, D:  doğru:k
+Daha Küçük
+Tahminim: 62
+B: daha büyük, K: daha küçük, D:  doğru:k
+Daha Küçük
+Tahminim: 56
+B: daha büyük, K: daha küçük, D:  doğru:b
+Daha Büyük
+Tahminim: 59
+B: daha büyük, K: daha küçük, D:  doğru:D
+Buldum! 5  tahminde buldum
 ```
 
 ## Kullanılanlar
@@ -184,6 +219,24 @@ Görüşmek üzere!
 - `Take(2)` ile 3 oyun kazanıp tabloda 2 satır görerek sınırın çalıştığını test ettim, sonra 5'e geri aldım. Kazanma, kaybetme (kaybedilen oyun tabloya girmiyor) ve farklı zorlukları ayrı ayrı denedim
 - Bilinen sınırlamalar: Tablo sadece program açıkken durur, kapatınca silinir. Aynı oyuncu birden fazla satırda görünebilir, yani tablo "en iyi 5 oyun" gibi çalışıyor. "En iyi skorunuz" satırı hâlâ dosyadaki tek sayıdan geliyor, kimseye ait değil
 
+### Versiyon 10
+
+- Ters modda bilgisayarın ortadan bölerek tahmin edeceğini önce kafamda denedim. İlk tahminin 50 olacağını kendim söyledim. İkinci tahminde 65 dedim → yapay zekâ "daha büyük" denince 1-50'nin tamamen elendiğini ve en iyi tahminin kalan aralığın (51-100) ortası olduğunu gösterdi, sonra 75'i buldum
+- "Daha küçük" denince kalan aralığı 51-75 sandım → yapay zekâ 75'in de elendiğini, yani 51-74 olduğunu açıkladı. "Daha büyük → alt sınır = tahmin + 1, daha küçük → üst sınır = tahmin - 1" kuralını yapay zekâ verdi. Ortayı hesaplarken (51 + 74) / 2 için 51,5 ve 62,5 yazdım, tam sayı bölmede küsuratın atıldığını (62) yapay zekâ hatırlattı. 112 / 2'yi 52 hesapladım (doğrusu 56), yapay zekâ düzeltti. Sonraki aralığı (57-61) kendim buldum
+- Bilgisayarın hatırlaması gereken kutuları (`altSinir`, `ustSinir`, `tahmin`) kendim sayabildim. Deneme sayacını (`denemeSayisi`) hatırlayamadım, yapay zekâ V3'ü hatırlattı. Dört satırı yazarken `;` ve son satırda `int` eksikti → yapay zekâ fark ettirdi
+- `TersModOyna` bir metot mu, sınıf mı diye sordum → yapay zekâ metodun bir iş (fiil), sınıfın bir kalıp (isim) olduğunu söyledi. Neden `Oyun` sınıfının içine koymadığımızı da sordum → yapay zekâ iki ayrı oyunun işlerinin karışacağını, bunun bir tasarım kararı olduğunu açıkladı. `void`'i ipucuyla buldum
+- `tahmin = (altSinir + ustSinir) / 2;` satırını yapay zekâ verdi, ben yazdım. Hesabı (1 + 100) / 2 = 50 kendim yaptım
+- Tahmin mesajını (`$"Tahminim: {tahmin}"`) ilk denemede süslü parantezi tırnağın dışına koyarak yazdım, kendim düzelttim. Cevabı okuyan satırın kalıbını yapay zekâ verdi, ben `int cevap` yazdım, sonra `string` olması gerektiğini kendim fark edip düzelttim
+- "Doğru" kontrolünü (`D`) V6'daki `TekrarEt` kalıbına bakarak yazdım, `| |` arasına boşluk koymuştum → yapay zekâ düzeltti. `Console.WriteLine("Buldum");` ve `return;` satırlarını kendim yazdım. `return;` ipucusunu yapay zekâ verdi
+- "Daha büyük" (`B`) için `altSinir = tahmin + 1;` satırını kendim yazdım, ama `else` ile başlamıştım ve `return;` koymuştum → yapay zekâ `else if` gerektiğini ve burada `return;` olmaması gerektiğini söyledi. "Daha küçük" (`K`) bloğunu B'nin aynası olarak kendim yazdım. `else`, parantez ve `;` hatalarını yapay zekâ gösterdi
+- Hangi satırların döngünün içine, hangilerinin dışına girmesi gerektiğini sordu yapay zekâ. Başta kutuların (alt sınır, üst sınır) da içeri girebileceğini düşündüm. Alt ve üst sınırı döngünün içine koyarsam her turda 1 ve 100'e döneceğini, bilgisayarın hep 50 diyeceğini kendim fark ettim. Deneme sayacının da dışarıda olması gerektiğini ve iskeleti (kutular dışarıda, tahmin ve cevap içeride) yapay zekâ gösterdi, metodu ben buna göre düzenledim
+- `denemeSayisi++;` satırını döngünün içine kendim koydum. Bitiş mesajına sayıyı eklerken önce yanlış kutuyu (`tahmin`) kullandım → yapay zekâ `denemeSayisi` olması gerektiğini söyledi
+- Testte B, K, D yerine 30 yazınca bilgisayar aynı tahmini tekrarladı ve sayaç boşuna arttı. `else` bloğunu (geçersiz harf uyarısı) kendim yazdım, `continue` kelimesini yanlış yazdım. Sayacı geri alan `denemeSayisi--;` çözümünü yapay zekâ verdi
+- Tutarsız cevaplar verince (75'e "daha büyük", sonra 76'ya "daha küçük") bilgisayar sonsuza kadar 75 dedi, bozuldu mu diye sordum → yapay zekâ alt sınırın üst sınırı geçtiğini açıkladı. İlk fikrim `altSinir = ustSinir` idi, yanlıştı. `if (altSinir > ustSinir)` koşulunu boşluk doldurma ile buldum, uyarı mesajı ve `return;` satırlarını yapay zekâ verdi
+- Mod seçimini ad sorusundan önce yapmaya kendim karar verdim (ters modda ad gerekmediği için). `int mod = SayiAl(...)` satırında ilk denemede `TersModOyna` yazmıştım → yapay zekâ `SayiAl` olması gerektiğini söyledi. `if (mod == 2) { TersModOyna(); return; }` kalıbını yapay zekâ verdi, `==` kullandığını ve 1 ya da 5 yazılırsa normal oyunun başlayacağını kendim açıkladım. Ana programda `return;` yazınca programın tamamının bittiğini yapay zekâdan öğrendim
+- Normal mod, ters mod, sonsuz döngü, geçersiz cevap ve çelişkili cevap durumlarını ayrı ayrı test ettim
+- Bilinen sınırlama: Ters mod tek oyunluk. Bitince program kapanıyor, tekrar oynama sorulmuyor
+
 ## Sonraki adımlar
 
 - [x] Bilgisayar sayı tutar, kullanıcı tahmin eder
@@ -196,4 +249,4 @@ Görüşmek üzere!
 - [x] En iyi skoru dosyaya kaydetmek
 - [x] OOP: Oyun ve Oyuncu sınıfları
 - [x] Skor tablosu: en iyi 5
-- [ ] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
+- [x] Ters mod: Ben sayı tutarım, bilgisayar tahmin eder (ikili arama)
