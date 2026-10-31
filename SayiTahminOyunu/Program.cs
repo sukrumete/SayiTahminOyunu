@@ -1,4 +1,9 @@
-﻿TersModOyna();
+﻿int mod = SayiAl("Oyun Modu Seçiniz (1: Normal, 2: Ters): ");
+if (mod == 2)
+{
+    TersModOyna();
+    return;
+}
 Oyun oyun = new Oyun();
 Oyuncu oyuncu = new Oyuncu();
 List<Oyuncu> skorlar = new List<Oyuncu>();
@@ -117,6 +122,11 @@ void TersModOyna()
 
     while (true)
     {
+        if (altSinir > ustSinir)
+{
+            Console.WriteLine("Cevaplarında bir tutarsızlık var, oyunu bitiriyorum.");
+            return;
+        }
         tahmin = (altSinir + ustSinir) / 2;
         Console.WriteLine($"Tahminim: {tahmin}");
         Console.Write("B: daha büyük, K: daha küçük, D:  doğru:");
@@ -138,6 +148,12 @@ void TersModOyna()
         {
             Console.WriteLine("Daha Küçük");
             ustSinir = tahmin - 1;
+        }
+        else
+        {
+            Console.WriteLine("Geçerli Bir Harf Giriniz. Lütfen B, K ya da D yazın.");
+            denemeSayisi--;
+            continue;
         }
     }
 
