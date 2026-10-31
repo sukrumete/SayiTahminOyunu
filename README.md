@@ -1,4 +1,4 @@
-# Sayı Tahmin Oyunu 🎯
+# 🎯 Sayı Tahmin Oyunu
 
 C# ile yazılmış basit bir konsol tahmin oyunu. C# öğrenme sürecimdeki ikinci projem.
 
